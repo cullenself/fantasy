@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from lxml import html
+from jinja2 import Template
 import requests
 import yaml
 
@@ -25,6 +26,15 @@ def loadTeams():
         teams = yaml.load(fp)
     return teams 
 
+def render(score, teams, stats):
+    with open('index.html.jinja') as fp:
+        tmpl = Template(fp.read())
+    # Reformat Score to be template friendly
+    score = [{'wins':w,'part':p} for w,p in sorted([(w,p) for p,w in score.items()], reverse=True)]
+    with open('index.html','w') as outFile:
+        outFile.write(tmpl.render(score=score))
+    return
+
 if __name__ == '__main__':
     teams = loadTeams()
     stats = loadWins()
@@ -33,5 +43,4 @@ if __name__ == '__main__':
         score[part] = 0
         for pro in teams[part]:
             score[part] += stats[pro]
-    for wins, part in sorted([(w,p) for p, w in score.items()], reverse=True):
-        print(part + ': ' + str(wins))
+    render(score,teams,stats)

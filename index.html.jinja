@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fantasy Football</title>
+</head>
+<body>
+    <h1>Fantasy Football</h1>
+    <h2>Unprofessionals</h2>
+
+    <table>
+    <tr>
+        <th>Team</th>
+        <th>Wins</th>
+    </tr>
+    {% for entry in score %}
+        <tr>
+            <td>{{ entry['part'] }}</td>
+            <td>{{ entry['wins'] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>

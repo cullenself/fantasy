@@ -1,2 +1,4 @@
 teams.yaml
 __pycache__/*
+*.swp
+*.html
