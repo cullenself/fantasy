@@ -22,4 +22,4 @@ app.get('/stats', function (req, res) {
 
 app.use(express.static('public'));
 
-app.listen(PORT, () => console.log('Stats app listening on port ${ PORT }!'));
+app.listen(PORT, () => console.log(`Stats app listening on port ${ PORT }!`));
