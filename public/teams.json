@@ -1,0 +1,50 @@
+{
+  "Ben": [
+    "New York Jets",
+    "Los Angeles Rams",
+    "Arizona Cardinals",
+    "New Orleans Saints"
+  ],
+  "Bryson": [
+    "Green Bay Packers",
+    "Denver Broncos",
+    "Cincinnati Bengals",
+    "Houston Texans"
+  ],
+  "Cullen": [
+    "Kansas City Chiefs",
+    "Baltimore Ravens",
+    "Atlanta Falcons",
+    "Buffalo Bills"
+  ],
+  "Isaac": [
+    "Cleveland Browns",
+    "Los Angeles Chargers",
+    "Minnesota Vikings",
+    "Chicago Bears"
+  ],
+  "Jacob": [
+    "Jacksonville Jaguars",
+    "Detroit Lions",
+    "Indianapolis Colts",
+    "Philadelphia Eagles"
+  ],
+  "Jake": [
+    "Oakland Raiders",
+    "San Francisco 49ers",
+    "New England Patriots",
+    "Seattle Seahawks"
+  ],
+  "Miles": [
+    "Miami Dolphins",
+    "Tampa Bay Buccaneers",
+    "Dallas Cowboys",
+    "Carolina Panthers"
+  ],
+  "Sydney": [
+    "Tennessee Titans",
+    "Washington Redskins",
+    "New York Giants",
+    "Pittsburgh Steelers"
+  ]
+}
