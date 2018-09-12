@@ -39,5 +39,5 @@ function loadTeams(callback) {
 
 function loadStats(callback) {
     // Updating the stats is implemented with express server on backend
-    $.getJSON('http://localhost:8000/stats?callback=?', callback);
+    $.getJSON('stats?callback=?', callback);
 }

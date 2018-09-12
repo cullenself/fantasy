@@ -21,4 +21,4 @@ app.get('/stats', function (req, res) {
 
 app.use(express.static('public'));
 
-app.listen(8000, () => console.log('Stats app listening on port 8000!'));
+app.listen(80, () => console.log('Stats app listening on port 80!'));
