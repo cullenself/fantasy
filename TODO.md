@@ -1,9 +1,9 @@
 # TODO
 - [ ] make into website
     - [ ] style
-    - [ ] setup (better) deployment
+    - [x] setup (better) deployment // Heroku linked to GitHub
     - [x] Template
-- [ ] updates on:
+- [x] updates on:
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
@@ -11,6 +11,10 @@
 - [x] league config
     - [ ] maybe make into JS for consistency?
 - [ ] document
+    - [ ] Front End
+    - [ ] Back End
+    - [ ] README
 - [ ] clean up callbacks
 - [ ] add individual team stats
-- [ ] use helmet
+- [x] use Helmet
+- [ ] redirect cullenself.com/fantasy to Heroku

@@ -1,9 +1,12 @@
 const express = require('express');
 const app = express();
 var request = require('request');
+var helmet = require('helmet');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const PORT = process.env.PORT || 5000;
+
+app.use(helmet());
 
 app.get('/stats', function (req, res) {
     request('http://stats.washingtonpost.com/fb/standings.asp', function (err, resp, body) {
