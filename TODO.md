@@ -1,6 +1,6 @@
 # TODO
-- [ ] make into website
-    - [ ] style
+- [x] make into website
+    - [x] style
     - [x] setup (better) deployment // Heroku linked to GitHub
     - [x] Template
 - [x] updates on:
