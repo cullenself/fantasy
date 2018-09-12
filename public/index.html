@@ -5,20 +5,37 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.2/mustache.min.js"></script>
     <script src="./update.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body onload="loadTable()">
-    <h1>Fantasy Football</h1>
-    <h2>Unprofessionals</h2>
+    <div class="container">
+    <div class="row">
+        <div class="col m2 hide-on-small-only"></div>
+        <div class="col s12 m8 center-align">
+            <div class="card-panel oil-blue white-text">
+                <h1>Fantasy Football</h1>
+                <h2>The Unprofessionals</h2>
+            </div>
+        </div>
+        <div class="col m2 hide-on-small-only"></div>
+    </div>
 
-    <table id="top">
+    <table id="top" class="flow-text">
         <thead>
             <tr>
                 <th>Teams</th>
                 <th>Wins</th>
             <tr>
         </thead>
-        <tbody id="target"></tbody>
+        <tbody id="target">
+            <tr>
+                <td colspan=2>Loading</td>
+            </tr>
+        </tbody>
     </table>
+    </div>
     <script id="template" type="x-tmpl-mustache">
         {{#score}}
             <tr class="main">
