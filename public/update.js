@@ -11,6 +11,7 @@ function loadTable() {
     updateScore( function(scores) { 
         var rendered = Mustache.render(template, {score:scores});
         $('#target').html(rendered);
+        hidePros();
     });
 }
 
@@ -19,9 +20,10 @@ function updateScore(callback) {
         loadStats(function(stats) {
             var score = [] 
             for (var part in teams) {
-                var temp = {'part':part, 'wins':0};
+                var temp = {'part':part, 'wins':0, 'pros':[]};
                 for (var pro in teams[part]) {
                     temp['wins'] += stats[teams[part][pro]];
+                    temp['pros'].push({'pro':teams[part][pro], 'wins':stats[teams[part][pro]]});
                 }
                 score.push(temp);
             }
@@ -40,4 +42,19 @@ function loadTeams(callback) {
 function loadStats(callback) {
     // Updating the stats is implemented with express server on backend
     $.getJSON('stats?callback=?', callback);
+}
+
+function hidePros() {
+    $("td.hidden").hide();
+    $("table#top").click( function(event) {
+        event.stopPropagation();
+        var $target = $(event.target);
+        if ($target.closest("td").hasClass("hidden")) {
+            $target.closest("td").slideToggle();
+        } else if ($target.closest("tr.main").children("td").hasClass("hidden")) {
+            $target.closest("tr.main").children("td").slideToggle();
+        } else {
+            $target.closest("tr.main").next().children(".hidden").slideToggle();
+        }
+    });
 }

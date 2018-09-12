@@ -10,16 +10,38 @@
     <h1>Fantasy Football</h1>
     <h2>Unprofessionals</h2>
 
-    <table id="target"></table>
-    <script id="template" type="x-tmpl-mustache">
-        <tr>
-            <th>Team</th>
-            <th>Wins</th>
-        </tr>
-        {{#score}}
+    <table id="top">
+        <thead>
             <tr>
+                <th>Teams</th>
+                <th>Wins</th>
+            <tr>
+        </thead>
+        <tbody id="target"></tbody>
+    </table>
+    <script id="template" type="x-tmpl-mustache">
+        {{#score}}
+            <tr class="main">
                 <td>{{part}}</td>
                 <td>{{wins}}</td>
+            </tr>
+            <tr class="main">
+                <td colspan=2, class="hidden">
+                    <table>
+                        <thead>
+                            <th>Team</th>
+                            <th>Wins</th>
+                        </thead>
+                        <tbody>
+                            {{#pros}}
+                                <tr>
+                                    <td>{{pro}}</td>
+                                    <td>{{wins}}</td>
+                                </tr>
+                            {{/pros}}
+                        </tbody>
+                    </table>
+                </td>
             </tr>
         {{/score}} 
     </script>

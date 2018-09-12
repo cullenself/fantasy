@@ -7,6 +7,7 @@
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
+        - [ ] Use API rather than scrape results
     - schedule (static page w/ cron job)
 - [x] league config
     - [ ] maybe make into JS for consistency?
@@ -15,6 +16,6 @@
     - [ ] Back End
     - [ ] README
 - [ ] clean up callbacks
-- [ ] add individual team stats
+- [x] add individual team stats
 - [x] use Helmet
 - [ ] redirect cullenself.com/fantasy to Heroku
