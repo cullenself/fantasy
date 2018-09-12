@@ -12,8 +12,6 @@ function loadTable() {
         var rendered = Mustache.render(template, {score:scores});
         $('#target').html(rendered);
     });
-    //var rendered = Mustache.render(template, {score:score});
-    //$('#target').html(rendered);
 }
 
 function updateScore(callback) {
@@ -40,6 +38,6 @@ function loadTeams(callback) {
 }
 
 function loadStats(callback) {
-    // to be fully implemented
-    $.getJSON('stats.json', callback);
+    // Updating the stats is implemented with express server on backend
+    $.getJSON('http://localhost:8000/stats?callback=?', callback);
 }

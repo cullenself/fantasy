@@ -5,10 +5,12 @@
     - [x] Template
 - [ ] updates on:
     - view (web app) // rewrite to make this happen
-        - [ ] Need to add API calls and parse this
+        - [x] build backend to serve `stats.json`
+        - [x] change `loadStats()` to call this backend
     - schedule (static page w/ cron job)
 - [x] league config
     - [ ] maybe make into JS for consistency?
 - [ ] document
 - [ ] clean up callbacks
 - [ ] add individual team stats
+- [ ] use helmet

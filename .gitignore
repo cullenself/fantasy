@@ -1,4 +1,3 @@
-teams.yaml
-__pycache__/*
 *.swp
 *.json
+node_modules/*
