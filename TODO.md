@@ -1,10 +1,14 @@
 # TODO
 - [ ] make into website
     - [ ] style
-    - [ ] setup deployment
+    - [ ] setup (better) deployment
     - [x] Template
 - [ ] updates on:
-    - view (web app)
-    - schedule (static page w/ cron job) // going to go simple route
+    - view (web app) // rewrite to make this happen
+        - [ ] Need to add API calls and parse this
+    - schedule (static page w/ cron job)
 - [x] league config
+    - [ ] maybe make into JS for consistency?
 - [ ] document
+- [ ] clean up callbacks
+- [ ] add individual team stats

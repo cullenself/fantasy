@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fantasy Football</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.2/mustache.min.js"></script>
+    <script src="./update.js"></script>
+</head>
+<body onload="loadTable()">
+    <h1>Fantasy Football</h1>
+    <h2>Unprofessionals</h2>
+
+    <table id="target"></table>
+    <script id="template" type="x-tmpl-mustache">
+        <tr>
+            <th>Team</th>
+            <th>Wins</th>
+        </tr>
+        {{#score}}
+            <tr>
+                <td>{{part}}</td>
+                <td>{{wins}}</td>
+            </tr>
+        {{/score}} 
+    </script>
+</body>
+</html>
