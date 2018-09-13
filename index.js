@@ -28,26 +28,27 @@ app.use(express.static('public'));
  */
 app.get('/stats', (req, res) => {
   // Change to use a proper API
+  const TOKEN = process.env.MSFTOKEN;
   const options = {
     method: 'GET',
     url: 'https://api.mysportsfeeds.com/v2.0/pull/nfl/2018-regular/standings.json',
     headers: {
-      Authorization: `Basic ${Buffer.from(`${process.env.MSFTOKEN}:MYSPORTSFEEDS`).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(`${TOKEN}:MYSPORTSFEEDS`).toString('base64')}`,
     },
     json: true,
     qs: {
-      stats: 'standings',
+      stats: 'W',
     },
   };
   request(options, (error, response, body) => {
     // Probably should add error handling, maybe cache backups
-    console.log(error); // TODO: remove
-    console.log(response);
-    const msf = JSON.parse(body);
+    // console.log(error); // TODO: remove
+    // console.log(response);
+    const msf = body;
     const stats = { timestamp: msf.lastUpdatedOn, pro_teams: [] };
     Object.values(msf.teams).forEach((t) => {
       stats.pro_teams.push({
-        name: `${t.team.city}  ${t.team.name}`,
+        name: `${t.team.city} ${t.team.name}`,
         abbreviation: t.team.abbreviation,
         wins: t.stats.standings.wins,
       });

@@ -29,8 +29,7 @@ function hidePros() {
 async function updateScore() {
   const results = await Promise.all([
     $.getJSON('/javascripts/teams.json'),
-    //    $.getJSON('/stats?callback=?'),
-    $.getJSON('/javascripts/stats.json'),
+    $.getJSON('/stats?callback=?'),
   ]);
   const score = [];
   const teams = results[0];
