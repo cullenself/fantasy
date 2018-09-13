@@ -8,8 +8,8 @@
             - [ ] Add scores to games in progress?
     - schedule (static page w/ cron job)
 - [ ] document
-    - [ ] Front End
-    - [ ] Back End
+    - [x] Front End
+    - [x] Back End
     - [ ] README
 - [ ] Lint
     - [ ] clean up callbacks
