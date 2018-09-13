@@ -15,12 +15,13 @@ app.use(express.static('public'));
 
 /**
  * Route to provide JSON formatted stats object with current NFL team information.
- * @response {Array}  stats                 Array of pro_teams
- * @response {Object} pro_team              Dictionary of relevant values for each Professional Team
- * @response {String} pro_team.name         Team name
- * @response {String} pro_team.city         Team city
- * @response {String} pro_team.abbreviation Team abbreviation
- * @response {Int}    pro_team.wins         Team wins
+ * @response {Object} stats                         Dictionary containing pro_teams and timestamp
+ * @response {String} stats.timestamp               ISO8601 representation of time of last update
+ * @response {Array}  stats.pro_teams               Array containing NFL team dictionaries
+ * @response {Object} pro_team (stats.pro_teams[i]) Dictionary of relevant values for each Professional Team
+ * @response {String} pro_team.name                 Team name (i.e. "Denver Broncos")
+ * @response {String} pro_team.abbreviation         Team abbreviation (i.e. ("DEN"))
+ * @response {Int}    pro_team.wins                 Team wins
  */
 app.get('/stats', function (req, res) {
     // Change to use a proper API
@@ -36,11 +37,21 @@ app.get('/stats', function (req, res) {
         }
     };
     request(options, function(error, response, body) {
+        // Probably should add error handling, maybe cache backups
         console.log(error);
         console.log(response);
-        console.log(body);
+        var msf = JSON.parse(body);
+        var stats = { timestamp: msf['lastUpdatedOn'], teams: []};
+        for (t in msf['teams']) {
+            var team = {
+                name: `${t['city']}  ${t['name']}`,
+                abbreviation: t['abbreviation'],
+                wins: t['standings']['wins']
+            };
+            stats['pro_teams'].push(team);
+        }
+        res.jsonp(stats);
     });
-    res.jsonp(stats);
 });
 
 // Start up server

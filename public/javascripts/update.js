@@ -22,14 +22,12 @@ function updateScore(callback) {
             for (var part in teams) {
                 var temp = {'part':part, 'wins':0, 'pros':[]};
                 for (var pro in teams[part]) {
-                    temp['wins'] += stats[teams[part][pro]];
-                    temp['pros'].push({'pro':teams[part][pro], 'wins':stats[teams[part][pro]]});
+                    temp.pros.push(stats.pro_teams[pro]);
                 }
+                temp.wins = temp.pros.reduce( (acc, curr) => acc + curr.wins, 0 );
                 score.push(temp);
             }
-            score.sort(function(first,second) {
-                return second['wins'] - first['wins'];
-            });
+            score.sort( (first, second) => second.wins - first.wins );
             callback(score);
         })
     });
