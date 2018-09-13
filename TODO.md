@@ -1,21 +1,25 @@
 # TODO
-- [x] make into website
-    - [x] style
-    - [x] setup (better) deployment // Heroku linked to GitHub
-    - [x] Template
 - [x] updates on:
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
         - [ ] Use API rather than scrape results
+            - [ ] Add Next games
+            - [ ] Add scores to games in progress?
     - schedule (static page w/ cron job)
-- [x] league config
-    - [ ] maybe make into JS for consistency?
 - [ ] document
     - [ ] Front End
     - [ ] Back End
     - [ ] README
-- [ ] clean up callbacks
+- [ ] Lint
+    - [ ] clean up callbacks
+    - [ ] Use ECMA Script
 - [x] add individual team stats
 - [x] use Helmet
-- [ ] redirect cullenself.com/fantasy to Heroku
+- [x] redirect fantasy.cullenself.com to Heroku
+- [x] league config
+    - [ ] maybe make into JS for consistency?
+- [x] make into website
+    - [x] style
+    - [x] setup (better) deployment // Heroku linked to GitHub
+    - [x] Template

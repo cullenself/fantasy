@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 
 app.get('/stats', function (req, res) {
+    // Change to use a proper API
     request('http://stats.washingtonpost.com/fb/standings.asp', function (err, resp, body) {
         const { document } = (new JSDOM(body)).window;
         var r = Array.from(document.getElementsByClassName('shsRow0Row'));
