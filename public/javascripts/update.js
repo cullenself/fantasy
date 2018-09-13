@@ -36,12 +36,12 @@ function updateScore(callback) {
 }
 
 function loadTeams(callback) {
-    $.getJSON('teams.json', callback);
+    $.getJSON('/javascripts/teams.json', callback);
 }
 
 function loadStats(callback) {
     // Updating the stats is implemented with express server on backend
-    $.getJSON('stats?callback=?', callback);
+    $.getJSON('/stats?callback=?', callback);
 }
 
 function hidePros() {
