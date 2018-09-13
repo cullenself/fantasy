@@ -1,19 +1,4 @@
 /**
- * Reads team listings.
- */
-function loadTeams(callback) {
-  $.getJSON('/javascripts/teams.json', callback);
-}
-
-/**
- * Get current NFL team information.
- */
-function loadStats(callback) {
-  // Updating the stats is implemented with express server on backend
-  $.getJSON('/stats?callback=?', callback);
-}
-
-/**
  * Hide team assignments on first load, then add event listener to table.
  */
 function hidePros() {
@@ -41,22 +26,24 @@ function hidePros() {
  * @returns {Object} score[i].pros[j] Dictionary of NFL team information, following
  *                                      schema from `index.js
  */
-function updateScore(callback) {
-  loadTeams((teams) => {
-    loadStats((stats) => {
-      const score = [];
-      Object.keys(teams).forEach((part) => {
-        const temp = { part, wins: 0, pros: [] };
-        Object.values(teams[part]).forEach((pro) => {
-          temp.pros.push(stats.pro_teams[pro]);
-        });
-        temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
-        score.push(temp);
-      });
-      score.sort((first, second) => second.wins - first.wins);
-      callback(score);
+async function updateScore(callback) {
+  const results = await Promise.all([
+    $.getJSON('/javascripts/teams.json'),
+    $.getJSON('/stats?callback=?'),
+  ]);
+  const score = [];
+  const teams = results[0];
+  const stats = results[1];
+  Object.keys(teams).forEach((part) => {
+    const temp = { part, wins: 0, pros: [] };
+    Object.values(teams[part]).forEach((pro) => {
+      temp.pros.push(stats.pro_teams[pro]);
     });
+    temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
+    score.push(temp);
   });
+  score.sort((first, second) => second.wins - first.wins);
+  return score;
 }
 
 /**
@@ -64,8 +51,8 @@ function updateScore(callback) {
  */
 function loadTable() {
   const template = $('#template').html();
-  updateScore((scores) => {
-    const rendered = Mustache.render(template, { score: scores });
+  updateScore().then((score) => {
+    const rendered = Mustache.render(template, { score });
     $('#target').html(rendered);
     hidePros();
   });

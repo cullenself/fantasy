@@ -14,8 +14,8 @@
     - [x] Back End
     - [ ] README
 - [x] Lint
-    - [ ] clean up callbacks
-    - [ ] Use ECMA Script
+    - [x] clean up callbacks, Promises, async/await
+    - [x] Use ECMA Script
 - [x] add individual team stats
 - [x] use Helmet
 - [x] redirect fantasy.cullenself.com to Heroku
