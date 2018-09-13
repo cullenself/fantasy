@@ -16,55 +16,74 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body onload="loadTable()">
-    <div class="container">
-    <div class="row">
-        <div class="col m2 hide-on-small-only"></div>
-        <div class="col s12">
-            <h1 class="oil-red-text">Fantasy Football</h1>
-                <h3 class="blue-grey-text text-darken-2">Unprofessionals</h3>
-        </div>
-        <div class="col m2 hide-on-small-only"></div>
-    </div>
-
-    <div class="row">
-        <div class="col s12">
-            <div class="card-panel oil-blue white-text">
-            <table id="top" >
-                <thead>
-                    <tr>
-                        <th>Teams</th>
-                        <th>Wins</th>
-                    <tr>
-                </thead>
-                <tbody id="target"> <!-- Contains spinner, will be rewritten on load --!>
-                    <tr>
-                        <td colspan=2>
-                            <div class="row">
-                                <div class="col s12 center-align">
-                                    <div class="preloader-wrapper big active">
-                                        <div class="spinner-layer spinner-red-only">
-                                            <div class="circle-clipper left">
-                                                <div class="circle"></div>
-                                            </div><div class="gap-patch">
-                                                <div class="circle"></div>
-                                            </div><div class="circle-clipper right">
-                                                <div class="circle"></div>
-                                            </div>
-                                        </div>
-                                     </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col m2 hide-on-small-only"></div>
+                <div class="col s12">
+                    <h1 class="oil-red-text">Fantasy Football</h1>
+                        <h3 class="blue-grey-text text-darken-2">Unprofessionals</h3>
+                </div>
+                <div class="col m2 hide-on-small-only"></div>
             </div>
         </div>
-    </div>
-    </div>
+    </header>
 
-    <!-- Template to replace tbody.targe !-->
-    <script id="template" type="x-tmpl-mustache">
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <div class="card-panel oil-blue white-text">
+                    <table id="top" >
+                        <thead>
+                            <tr>
+                                <th>Teams</th>
+                                <th>Wins</th>
+                            <tr>
+                        </thead>
+                        <tbody id="table-target"> <!-- Contains spinner, will be rewritten on load --!>
+                            <tr>
+                                <td colspan=2>
+                                    <div class="row">
+                                        <div class="col s12 center-align">
+                                            <div class="preloader-wrapper big active">
+                                                <div class="spinner-layer spinner-red-only">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div><div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div><div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                </div>
+                                             </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <div class="footer-copyright">
+            <div class="container" id="footer-target">
+                <a class="grey-text text-lighten-4 right" href="http://cullenself.com">Cullen Self</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Template to replace footer !-->
+    <script id="footer-template" type="x-tmpl-mustache">
+        Last Updated: {{timestamp}}
+        <a class="grey-text text-lighten-4 right" href="http://cullenself.com">Cullen Self</a>
+    </script>
+    <!-- Template to replace tbody.target !-->
+    <script id="table-template" type="x-tmpl-mustache">
         {{#score}}
             <tr class="main">
                 <td>{{part}}</td>

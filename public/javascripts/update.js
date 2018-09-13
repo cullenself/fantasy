@@ -44,17 +44,25 @@ async function updateScore() {
     score.push(temp);
   });
   score.sort((first, second) => second.wins - first.wins);
-  return score;
+  // format timestamp
+  const options = {
+    year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
+  };
+  const timestamp = new Date(stats.timestamp).toLocaleDateString('en-US', options);
+  return { score, timestamp };
 }
 
 /**
  * Fills in tbody.target with rendered template.
  */
 function loadTable() {
-  const template = $('#template').html();
-  updateScore().then((score) => {
-    const rendered = Mustache.render(template, { score });
-    $('#target').html(rendered);
+  const tableTemplate = $('script#table-template').html();
+  const footerTemplate = $('script#footer-template').html();
+  updateScore().then((result) => {
+    const renderedTable = Mustache.render(tableTemplate, { score: result.score });
+    $('tbody#table-target').html(renderedTable);
     hidePros();
+    const renderedFooter = Mustache.render(footerTemplate, { timestamp: result.timestamp });
+    $('div#footer-target').html(renderedFooter);
   });
 }

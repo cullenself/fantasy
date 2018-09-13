@@ -2,8 +2,19 @@
     background-color: #418FDE;
 }
 .oil-red {
-    background-color: #C8102E;
+    background-color: #e0696e;
 }
 .oil-red-text {
-    color: #C8102E;
+    color: #e0696e;
+}
+.page-footer {
+    padding-top: 0px;
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+main {
+  flex: 1 0 auto;
 }
