@@ -26,10 +26,11 @@ function hidePros() {
  * @returns {Object} score[i].pros[j] Dictionary of NFL team information, following
  *                                      schema from `index.js
  */
-async function updateScore(callback) {
+async function updateScore() {
   const results = await Promise.all([
     $.getJSON('/javascripts/teams.json'),
-    $.getJSON('/stats?callback=?'),
+    //    $.getJSON('/stats?callback=?'),
+    $.getJSON('/javascripts/stats.json'),
   ]);
   const score = [];
   const teams = results[0];
@@ -37,7 +38,7 @@ async function updateScore(callback) {
   Object.keys(teams).forEach((part) => {
     const temp = { part, wins: 0, pros: [] };
     Object.values(teams[part]).forEach((pro) => {
-      temp.pros.push(stats.pro_teams[pro]);
+      temp.pros.push(stats.pro_teams.find(p => p.name === pro));
     });
     temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
     score.push(temp);

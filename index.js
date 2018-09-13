@@ -44,14 +44,13 @@ app.get('/stats', (req, res) => {
     console.log(error); // TODO: remove
     console.log(response);
     const msf = JSON.parse(body);
-    const stats = { timestamp: msf.lastUpdatedOn, teams: [] };
+    const stats = { timestamp: msf.lastUpdatedOn, pro_teams: [] };
     Object.values(msf.teams).forEach((t) => {
-      const team = {
-        name: `${t.city}  ${t.name}`,
-        abbreviation: t.abbreviation,
-        wins: t.standings.wins,
-      };
-      stats.pro_teams.push(team);
+      stats.pro_teams.push({
+        name: `${t.team.city}  ${t.team.name}`,
+        abbreviation: t.team.abbreviation,
+        wins: t.stats.standings.wins,
+      });
     });
     res.jsonp(stats);
   });

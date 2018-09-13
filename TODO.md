@@ -8,6 +8,8 @@
         - [ ] Use API rather than scrape results
             - [ ] Add Next games
             - [ ] Add scores to games in progress?
+            - [ ] Team Logos and colors for detail page
+            - [ ] Last updated footer
     - schedule (static page w/ cron job)
 - [ ] document
     - [x] Front End
