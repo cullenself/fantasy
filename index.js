@@ -2,10 +2,9 @@
 const express = require('express');
 const request = require('request');
 const helmet = require('helmet');
-const jsdom = require("jsdom");
+const Buffer = require("Buffer");
 // Constants
 const PORT = process.env.PORT || 5000;
-const { JSDOM } = jsdom;
 const app = express();
 
 // Set up Express securely
@@ -25,18 +24,23 @@ app.use(express.static('public'));
  */
 app.get('/stats', function (req, res) {
     // Change to use a proper API
-    request('http://stats.washingtonpost.com/fb/standings.asp', function (err, resp, body) {
-        const { document } = (new JSDOM(body)).window;
-        var r = Array.from(document.getElementsByClassName('shsRow0Row'));
-        r = r.concat(Array.from(document.getElementsByClassName('shsRow1Row')));
-        var stats = {};
-        for (var i = 0; i<r.length; i++) {
-            name = r[i].children[0].children[0].textContent;
-            wins = parseInt(r[i].children[1].textContent);
-            stats[name] = wins;
+    var options = {
+        method: "GET",
+        url: 'https://api.mysportsfeeds.com/v2.0/pull/nfl/2018-regular/standings.json',
+        headers: {
+            "Authorization": "Basic " + Buffer.from(process.env.MSFTOKEN + ":" + "MYSPORTSFEEDS").toString('base64')
+        },
+        json: true,
+        qs: {
+            stats: "standings"
         }
-    res.jsonp(stats);
+    };
+    request(options, function(error, response, body) {
+        console.log(error);
+        console.log(response);
+        console.log(body);
     });
+    res.jsonp(stats);
 });
 
 // Start up server
