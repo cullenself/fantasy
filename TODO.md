@@ -1,4 +1,6 @@
 # TODO
+- [ ] Automatic minify of js in `./public/javascripts/`
+    - [x] enable compression
 - [x] updates on:
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
@@ -18,7 +20,7 @@
 - [x] use Helmet
 - [x] redirect fantasy.cullenself.com to Heroku
 - [x] league config
-    - [ ] maybe make into JS for consistency?
+    - [ ] maybe make into JS for consistency? // nah
 - [x] make into website
     - [x] style
     - [x] setup (better) deployment // Heroku linked to GitHub

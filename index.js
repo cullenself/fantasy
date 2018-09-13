@@ -2,6 +2,7 @@
 const express = require('express');
 const request = require('request');
 const helmet = require('helmet');
+const compression = require('compression');
 const Buffer = require('Buffer');
 // Constants
 const PORT = process.env.PORT || 5000;
@@ -9,6 +10,7 @@ const app = express();
 
 // Set up Express securely
 app.use(helmet());
+app.use(compression());
 
 // Serve pages in 'public' directory
 app.use(express.static('public'));
