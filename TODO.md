@@ -11,7 +11,7 @@
     - [x] Front End
     - [x] Back End
     - [ ] README
-- [ ] Lint
+- [x] Lint
     - [ ] clean up callbacks
     - [ ] Use ECMA Script
 - [x] add individual team stats
