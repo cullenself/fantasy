@@ -44,7 +44,7 @@ npm start
 ```
 Visiting [localhost:5000](http://localhost:5000) should show something similar to the following:
 
-![App Screenshot](https://github.com/cullenself/raw/master/screenshot.png)
+![App Screenshot](https://github.com/cullenself/fantasy/raw/master/screenshot.png)
 
 ### Heroku
 The following creates a new app on Heroku and configures the local `git` repo, then deploys.
