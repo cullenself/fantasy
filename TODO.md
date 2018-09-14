@@ -1,20 +1,23 @@
 # TODO
-- [ ] Automatic minify of js in `./public/javascripts/`
+- [ ] Smart Sourcing
+    - [ ] Add Cache
+    - [ ] Server returns Latest info compiled from all sources
+- [x] Automatic minify of js in `./public/javascripts/`
     - [x] enable compression
 - [x] updates on:
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
-        - [ ] Use API rather than scrape results
+        - [x] Use API rather than scrape results
             - [ ] Add Next games
             - [ ] Add scores to games in progress?
             - [ ] Team Logos and colors for detail page
-            - [ ] Last updated footer
+            - [x]  Last updated footer
     - schedule (static page w/ cron job)
-- [ ] document
+- [x] document
     - [x] Front End
     - [x] Back End
-    - [ ] README
+    - [x] README
 - [x] Lint
     - [x] clean up callbacks, Promises, async/await
     - [x] Use ECMA Script

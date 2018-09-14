@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "precommit": "lint-staged",
+    "precommit": "lint-staged && node-minify -c babel-minify -i public/javascripts/update.js -o public/javascripts/update.min.js && git add public/javascripts/update.min.js",
     "start": "node index.js"
   },
   "repository": {
@@ -33,12 +33,18 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "husky": "^0.14.3",
-    "lint-staged": "^7.2.2"
+    "lint-staged": "^7.2.2",
+    "node-minify": "^3.4.0"
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
+    "linters": {
+      "*.js": [
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+        "public/javascripts/*.min.js"
     ]
   }
 }
