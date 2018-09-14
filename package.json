@@ -37,7 +37,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged & node-minify -c babel-minify -i public/javascript/update.js -o public/javascript/update.min.js & git add public/javascript/update.min.js"
+      "pre-commit": "lint-staged && node-minify -c babel-minify -i public/javascript/update.js -o public/javascript/update.min.js && git add public/javascript/update.min.js"
     }
   },
   "lint-staged": {
