@@ -43,12 +43,7 @@ async function updateScore() {
     score.push(temp);
   });
   score.sort((first, second) => second.wins - first.wins);
-  // format timestamp
-  const options = {
-    year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
-  };
-  const timestamp = new Date(stats.timestamp).toLocaleDateString('en-US', options);
-  return { score, timestamp };
+  return { score, timestamp: stats.timestamp };
 }
 
 /**
