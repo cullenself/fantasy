@@ -1,10 +1,11 @@
 {
   "name": "fantasy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "View current Fantasy Football standings",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "lint-staged",
     "start": "node index.js"
   },
   "repository": {
@@ -18,8 +19,26 @@
   },
   "homepage": "https://github.com/cullenself/fantasy#readme",
   "dependencies": {
+    "Buffer": "0.0.0",
+    "cheerio": "^1.0.0-rc.2",
+    "compression": "^1.7.3",
     "express": "^4.16.3",
     "helmet": "^3.13.0",
-    "jsdom": "^12.0.0"
+    "moment": "^2.22.2",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

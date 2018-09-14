@@ -1,4 +1,6 @@
 # TODO
+- [ ] Automatic minify of js in `./public/javascripts/`
+    - [x] enable compression
 - [x] updates on:
     - view (web app) // rewrite to make this happen
         - [x] build backend to serve `stats.json`
@@ -6,19 +8,21 @@
         - [ ] Use API rather than scrape results
             - [ ] Add Next games
             - [ ] Add scores to games in progress?
+            - [ ] Team Logos and colors for detail page
+            - [ ] Last updated footer
     - schedule (static page w/ cron job)
 - [ ] document
-    - [ ] Front End
-    - [ ] Back End
+    - [x] Front End
+    - [x] Back End
     - [ ] README
-- [ ] Lint
-    - [ ] clean up callbacks
-    - [ ] Use ECMA Script
+- [x] Lint
+    - [x] clean up callbacks, Promises, async/await
+    - [x] Use ECMA Script
 - [x] add individual team stats
 - [x] use Helmet
 - [x] redirect fantasy.cullenself.com to Heroku
 - [x] league config
-    - [ ] maybe make into JS for consistency?
+    - [ ] maybe make into JS for consistency? // nah
 - [x] make into website
     - [x] style
     - [x] setup (better) deployment // Heroku linked to GitHub

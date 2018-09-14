@@ -1,29 +1,32 @@
+// Imports
 const express = require('express');
-const app = express();
-var request = require('request');
-var helmet = require('helmet');
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+const helmet = require('helmet');
+const compression = require('compression');
+// My Routes
+const routes = require('./routes');
+// Constants
 const PORT = process.env.PORT || 5000;
+const app = express();
 
+// Set up Express securely
 app.use(helmet());
+app.use(compression());
 
-app.get('/stats', function (req, res) {
-    // Change to use a proper API
-    request('http://stats.washingtonpost.com/fb/standings.asp', function (err, resp, body) {
-        const { document } = (new JSDOM(body)).window;
-        var r = Array.from(document.getElementsByClassName('shsRow0Row'));
-        r = r.concat(Array.from(document.getElementsByClassName('shsRow1Row')));
-        var stats = {};
-        for (var i = 0; i<r.length; i++) {
-            name = r[i].children[0].children[0].textContent;
-            wins = parseInt(r[i].children[1].textContent);
-            stats[name] = wins;
-        }
-    res.jsonp(stats);
-    });
-});
-
+// Serve pages in 'public' directory
 app.use(express.static('public'));
 
-app.listen(PORT, () => console.log(`Stats app listening on port ${ PORT }!`));
+/**
+ * Route to provide JSON formatted stats object with current NFL team information.
+ * @response {Object} stats                         Dictionary containing pro_teams and timestamp
+ * @response {String} stats.timestamp               Time of last update (pre-formatted)
+ * @response {Array}  stats.pro_teams               Array containing NFL team dictionaries
+ * @response {Object} pro_team (stats.pro_teams[i]) Dictionary of relevant values for each
+ *                                                    Professional Team
+ * @response {String} pro_team.name                 Team name (i.e. "Denver Broncos")
+ * @response {String} pro_team.abbreviation         Team abbreviation (i.e. ("DEN"))
+ * @response {Int}    pro_team.wins                 Team wins
+ */
+app.get('/stats', routes.getStats);
+
+// Start up server
+app.listen(PORT, () => console.log(`Stats app listening on port ${PORT}!`));
