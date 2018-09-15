@@ -63,7 +63,15 @@ async function loadCache() {
         $.getJSON('/javascripts/teams.json'),
         $.getJSON('/stats?callback=?'),
         $.getJSON('/sched?callback=?'),
-      ]);
+      ]).catch((err2) => {
+        if (err2.responseText === 'undefined') {
+          return Promise.all([
+            $.getJSON('/javascripts/teams.json'),
+            $.getJSON('/stats?callback=?'),
+          ]);
+        }
+        throw err2;
+      });
     }
     throw err;
   }).then((results) => {
@@ -88,19 +96,23 @@ async function loadCache() {
  *                                      schema from `/routes/stats.js`, with the addition of a
  *                                      `nextGame` string
  */
-async function calcScore(result) {
+function calcScore(result) {
   const score = [];
   const DATEOPT = { weekday: 'short', hour: 'numeric', minute: 'numeric' };
   Object.keys(result.teams).forEach((part) => {
     const temp = { part, wins: 0, pros: [] };
     Object.values(result.teams[part]).forEach((pro) => {
       const t = result.stats.pro_teams.find(p => p.name === pro);
-      let match = result.sched.games.find(g => g.homeAbbreviation === t.abbreviation);
-      if (match !== undefined) {
-        t.nextGame = `vs. ${match.awayAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+      if (result.sched) {
+        let match = result.sched.games.find(g => g.homeAbbreviation === t.abbreviation);
+        if (match !== undefined) {
+          t.nextGame = `vs. ${match.awayAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        } else {
+          match = result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
+          t.nextGame = `@ ${match.homeAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        }
       } else {
-        match = result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
-        t.nextGame = `@ ${match.homeAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        t.nextGame = '';
       }
       temp.pros.push(t);
     });
@@ -120,9 +132,17 @@ async function calcScore(result) {
  *                            latest info, `sched` is undefined
  */
 async function updateSched(result) {
-  const newSched = await $.getJSON('/sched?callback=?');
-  if (Date(newSched.timestamp) > Date(result.sched.timestamp)) { // need to implement comparision
-    return newSched;
+  const newSched = await $.getJSON('/sched?callback=?')
+    .catch((err) => {
+      if (err.responseText === 'undefined') {
+        return undefined;
+      }
+      throw err;
+    });
+  if (newSched) {
+    if (!result.sched || Date(newSched.timestamp) > Date(result.sched.timestamp)) {
+      return newSched;
+    }
   }
   return undefined;
 }
@@ -134,15 +154,23 @@ async function updateSched(result) {
  *                            if `result` already contains latest info, `stats` is undefined
  */
 async function updateStats(result) {
-  const newStats = await $.getJSON('/stats?callback=?');
-  if (Date(newStats.timestamp) > Date(result.stats.timestamp)) { // need to implement comparision
-    return newStats;
+  const newStats = await $.getJSON('/stats?callback=?')
+    .catch((err) => {
+      if (err.responseText === 'undefined') {
+        return undefined;
+      }
+      throw err;
+    });
+  if (newStats) {
+    if (!result.stats || Date(newStats.timestamp) > Date(result.stats.timestamp)) {
+      return newStats;
+    }
   }
   return undefined;
 }
 
 /**
- * Fetch latest information from back end.
+ * Fetch latest information from back end and display.
  * @param  {Object} result  Dictionary of stats and other information
  * @return {Object} result  Same as input, potentially updated
  */
@@ -152,7 +180,7 @@ async function update(result) {
     updateSched(result),
   ]).then((results) => {
     const newStats = results[0];
-    const newSched = results[0];
+    const newSched = results[1];
     if (newStats) {
       result.stats = newStats;
     }
@@ -160,7 +188,7 @@ async function update(result) {
       result.sched = newSched;
     }
     if (newStats || newSched) {
-      return calcScore(result);
+      return render(calcScore(result));
     }
     return result;
   });

@@ -71,7 +71,7 @@ async function readWP() {
       for (let i = 0; i < 32; i++) {
         stats.pro_teams.push({
           name: names[i],
-          abbreviation: abbrs[i],
+          abbreviation: (abbrs[i] === 'LAR') ? 'LA' : abbrs[i].toUpperCase(),
           wins: wins[i],
         });
       }

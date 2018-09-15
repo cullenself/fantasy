@@ -68,6 +68,13 @@ function getSched(req, res) {
     .then((sched) => {
       res.jsonp(sched);
       cache(sched);
+    })
+    .catch((err) => {
+      if (err.code === 'TOKEN') {
+        res.send('undefined');
+      } else {
+        throw err;
+      }
     });
 }
 
