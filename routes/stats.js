@@ -4,10 +4,6 @@ const Buffer = require('Buffer');
 const cheerio = require('cheerio');
 const moment = require('moment');
 const fs = require('fs');
-const helper = require('../helper.js');
-
-// Date formatting options
-const DATEOPT = { weekday: 'short', hour: 'numeric', minute: 'numeric' };
 
 /**
  * Try to retrieve and parse basic season stats from MySportsFeeds.
@@ -16,7 +12,7 @@ const DATEOPT = { weekday: 'short', hour: 'numeric', minute: 'numeric' };
 async function readAPI() {
   const TOKEN = process.env.MSFTOKEN;
   if (TOKEN) {
-    const statsOptions = {
+    const options = {
       method: 'GET',
       url: 'https://api.mysportsfeeds.com/v2.0/pull/nfl/2018-regular/standings.json',
       headers: {
@@ -27,41 +23,21 @@ async function readAPI() {
         stats: 'W',
       },
     };
-    const week = helper.getNFLWeek();
-    const nextOptions = {
-      method: 'GET',
-      url: `https://api.mysportsfeeds.com/v2.0/pull/nfl/2018-regular/week/${week}/games.json`,
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${TOKEN}:MYSPORTSFEEDS`).toString('base64')}`,
-      },
-      json: true,
-    };
-    return Promise.all([
-      request(statsOptions),
-      request(nextOptions),
-    ]).then((results) => {
-      const msf = results[0];
-      const stats = { timestamp: msf.lastUpdatedOn, source: 'msf', pro_teams: [] };
-      Object.values(msf.teams).forEach((t) => {
-        stats.pro_teams.push({
-          name: `${t.team.city} ${t.team.name}`,
-          abbreviation: t.team.abbreviation,
-          wins: t.stats.standings.wins,
+    return request(options)
+      .then((msf) => {
+      // Probably should add error handling, maybe cache backups
+      // console.log(error); // TODO: remove
+      // console.log(response);
+        const stats = { timestamp: msf.lastUpdatedOn, source: 'msf', pro_teams: [] };
+        Object.values(msf.teams).forEach((t) => {
+          stats.pro_teams.push({
+            name: `${t.team.city} ${t.team.name}`,
+            abbreviation: t.team.abbreviation,
+            wins: t.stats.standings.wins,
+          });
         });
+        return stats;
       });
-      const next = results[1];
-      Object.values(next.games).forEach((g) => {
-        const gametime = (new Date(g.schedule.startTime)).toLocaleDateString('en-US', DATEOPT);
-        let p = stats.pro_teams.find(t => t.abbreviation === g.schedule.homeTeam.abbreviation);
-        if (p !== undefined) {
-          p.next = `vs. ${g.schedule.awayTeam.abbreviation}, ${gametime}`;
-        } else {
-          p = stats.pro_teams.find(t => t.abbreviation === g.schedule.awayTeam.abbreviation);
-          p.next = `@ ${g.schedule.homeTeam.abbreviation}, ${gametime}`;
-        }
-      });
-      return stats;
-    });
   }
   const err = new Error('Token ENV variable not set');
   err.code = 'TOKEN';
