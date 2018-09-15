@@ -1,7 +1,8 @@
 # TODO
-- [ ] Smart Sourcing
-    - [ ] Add Cache
-    - [ ] Server returns Latest info compiled from all sources
+- [x] Smart Sourcing
+    - [x] Add Cache
+    - [x] Server returns Latest info compiled from all sources
+    - [ ] Set force false and handle 304 response
 - [x] Automatic minify of js in `./public/javascripts/`
     - [x] enable compression
 - [x] updates on:
@@ -9,7 +10,10 @@
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
         - [x] Use API rather than scrape results
-            - [ ] Add Next games
+            - [x] Add Next games
+                - [x] Add cache handle on front end
+                - [x] Add times
+                - [x] It'd be cleaner if added back `next` object and put text generation in the render function, else more functionality will pile up
             - [ ] Add scores to games in progress?
             - [ ] Team Logos and colors for detail page
             - [x]  Last updated footer

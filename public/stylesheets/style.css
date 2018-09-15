@@ -10,6 +10,9 @@
 .page-footer {
     padding-top: 0px;
 }
+.next-game {
+    color: #1b5998;
+}
 .overlay {
     background-color: rgba(146,177,209,1);
     color: rgba(222,222,222,1);

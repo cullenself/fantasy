@@ -38,72 +38,159 @@ function removeOverlay() {
   $('.card-panel').removeClass('overlay');
 }
 
-/**
- * Generates `score` array for use in template.
- * Checks if new data is available from back end.
- *
- * @returns {Object} result           Dictionary of stats and processed participant information,
-                                        either equivilant to loadCache(), or updated.
- */
-async function updateScore(result) {
-  const newStats = await $.getJSON('/stats?callback=?');
-  if (Date(newStats.timestamp) > Date(result.stats.timestamp)) { // need to implement comparision
-    Object.values(result.score).forEach((s) => {
-      Object.values(s.pros).forEach((pro) => {
-        pro.wins = newStats.pro_teams.find(p => p.name === pro.name).wins;
-      });
-    });
-    result.score.sort((first, second) => second.wins - first.wins);
-    result.stats.timestamp = newStats.timestamp;
-  }
-  return result;
-}
 
 /**
  * Generates `score` array for use in template.
  * Tries the cache first, API if missing.
  *
- * @returns {Object} result           Dictionary of processed scores and stats from cache
- * @returns {Array}  result.score     List of participants and relevant info
- * @returns {Object} score[i]         Dictionary of participant information
- * @returns {String} score[i].part    Name of Fantasy League participant
- * @returns {Int}    score[i].wins    Count of team wins
- * @returns {Array}  score[i].pros    List of pro-teams that participant has drafted
- * @returns {Object} score[i].pros[j] Dictionary of NFL team information, following
- *                                      schema from `/routes/stats.js`
- * @returns {Object} result.stats     Dictionary of NFL team information retrieved from back end
- * @returns {String} stats.timestamp  ISO8601 formatted string, time of last update
- * @returns {String} stats.source     Either 'wp' or 'msf' to denote Washington Post
- *                                      or MySportsFeed as source of data
- * @returns {Array}  stats.pro_teams  List of all pro-teams in NFL, following schema
- *                                      from `/routes/stats.js`
+ * @returns {Object}   result         Dictionary of processed scores and stats from cache
+ * @returns {Object}   result.stats   Dictionary of NFL team information retrieved from back end
+ *                                      Schema from `/routes/stats.js`
+ * @returns {Object}   result.sched   Dictionary of latest NFL schedule information
+ *                                      Schema from `/routes/sched.js`
+ * @returns {Object}   result.teams   Dictionary of team assignments
+ * @returns {String}   teams.keys()   Names of participants
+ * @returns {String[]} teams.values() Drafted teams corresponding to participant
  */
 async function loadCache() {
   return Promise.all([
     $.getJSON('/javascripts/teams.json'),
     $.getJSON('/javascripts/stats.json'),
+    $.getJSON('/javascripts/sched.json'),
   ]).catch((err) => {
     if (err.status === 404) {
       return Promise.all([
         $.getJSON('/javascripts/teams.json'),
         $.getJSON('/stats?callback=?'),
-      ]);
+        $.getJSON('/sched?callback=?'),
+      ]).catch((err2) => {
+        if (err2.responseText === 'undefined') {
+          return Promise.all([
+            $.getJSON('/javascripts/teams.json'),
+            $.getJSON('/stats?callback=?'),
+          ]);
+        }
+        throw err2;
+      });
     }
     throw err;
   }).then((results) => {
     const teams = results[0];
     const stats = results[1];
-    const score = [];
-    Object.keys(teams).forEach((part) => {
-      const temp = { part, wins: 0, pros: [] };
-      Object.values(teams[part]).forEach((pro) => {
-        temp.pros.push(stats.pro_teams.find(p => p.name === pro));
-      });
-      temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
-      score.push(temp);
+    const sched = results[2];
+    return { teams, stats, sched };
+  });
+}
+
+/**
+ * Process gathered data to yield several template strings.
+ *
+ * @params  {Object} result           Must contain `teams`, `stats`, and `sched` dictionaries.
+ *
+ * @returns {Array}  result.score     List of participants and relevant info
+ * @returns {Object} score[i]         Dictionary of participant information
+ * @returns {String} score[i].part    Name of Fantasy League participant
+ * @returns {Int}    score[i].wins    Count of team wins
+ * @returns {Array}  score[i].pros    List of pro-teams that participant has drafted
+ * @returns {Object} score[i].pros[j] Dictionary of NFL team information, similar to
+ *                                      schema from `/routes/stats.js`, with the addition of a
+ *                                      `nextGame` string
+ */
+function calcScore(result) {
+  const score = [];
+  const DATEOPT = { weekday: 'short', hour: 'numeric', minute: 'numeric' };
+  Object.keys(result.teams).forEach((part) => {
+    const temp = { part, wins: 0, pros: [] };
+    Object.values(result.teams[part]).forEach((pro) => {
+      const t = result.stats.pro_teams.find(p => p.name === pro);
+      if (result.sched) {
+        let match = result.sched.games.find(g => g.homeAbbreviation === t.abbreviation);
+        if (match !== undefined) {
+          t.nextGame = `vs. ${match.awayAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        } else {
+          match = result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
+          t.nextGame = `@ ${match.homeAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        }
+      } else {
+        t.nextGame = '';
+      }
+      temp.pros.push(t);
     });
-    score.sort((first, second) => second.wins - first.wins);
-    return { score, stats };
+    temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
+    score.push(temp);
+  });
+  score.sort((first, second) => second.wins - first.wins);
+  result.score = score;
+  return result;
+}
+
+/**
+ * Checks if fresher game schedule is available.
+ *
+ * @returns {Object} sched  Dictionary of NFL schedule, see schema description
+ *                            in `/routes/sched.js`, if `result` already contains
+ *                            latest info, `sched` is undefined
+ */
+async function updateSched(result) {
+  const newSched = await $.getJSON('/sched?callback=?')
+    .catch((err) => {
+      if (err.responseText === 'undefined') {
+        return undefined;
+      }
+      throw err;
+    });
+  if (newSched) {
+    if (!result.sched || Date(newSched.timestamp) > Date(result.sched.timestamp)) {
+      return newSched;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Checks if fresher standings are available.
+ *
+ * @returns {Object} stats  Dictionary of current NFL standings, see schema in `/routes/stats.js`,
+ *                            if `result` already contains latest info, `stats` is undefined
+ */
+async function updateStats(result) {
+  const newStats = await $.getJSON('/stats?callback=?')
+    .catch((err) => {
+      if (err.responseText === 'undefined') {
+        return undefined;
+      }
+      throw err;
+    });
+  if (newStats) {
+    if (!result.stats || Date(newStats.timestamp) > Date(result.stats.timestamp)) {
+      return newStats;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Fetch latest information from back end and display.
+ * @param  {Object} result  Dictionary of stats and other information
+ * @return {Object} result  Same as input, potentially updated
+ */
+async function update(result) {
+  return Promise.all([
+    updateStats(result),
+    updateSched(result),
+  ]).then((results) => {
+    const newStats = results[0];
+    const newSched = results[1];
+    if (newStats) {
+      result.stats = newStats;
+    }
+    if (newSched) {
+      result.sched = newSched;
+    }
+    if (newStats || newSched) {
+      return render(calcScore(result));
+    }
+    return result;
   });
 }
 
@@ -115,9 +202,9 @@ function loadTable() {
   Mustache.parse(window.tableTemplate); // provides speed benefit for multiple uses
   window.footerTemplate = $('script#footer-template').html();
   loadCache()
+    .then(calcScore)
     .then(render)
-    .then(updateScore)
-    .then(render)
+    .then(update)
     .then(() => {
       attachEvents();
       removeOverlay();
