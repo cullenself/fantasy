@@ -84,13 +84,11 @@ async function loadCache() {
   return Promise.all([
     $.getJSON('/javascripts/teams.json'),
     $.getJSON('/javascripts/stats.json'),
-    $.getJSON('/javascripts/next.json'),
   ]).catch((err) => {
     if (err.status === 404) {
       return Promise.all([
         $.getJSON('/javascripts/teams.json'),
         $.getJSON('/stats?callback=?'),
-        $.getJSON('/next?callback=?'),
       ]);
     }
     throw err;
