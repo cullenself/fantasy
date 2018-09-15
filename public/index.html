@@ -33,7 +33,7 @@
         <div class="container">
             <div class="row">
                 <div class="col s12">
-                    <div class="card-panel oil-blue white-text">
+                    <div class="card-panel oil-blue white-text overlay">
                     <table id="top" >
                         <thead>
                             <tr>
@@ -41,32 +41,27 @@
                                 <th>Wins</th>
                             <tr>
                         </thead>
-                        <tbody id="table-target"> <!-- Contains spinner, will be rewritten on load --!>
-                            <tr>
-                                <td colspan=2>
-                                    <div class="row">
-                                        <div class="col s12 center-align">
-                                            <div class="preloader-wrapper big active">
-                                                <div class="spinner-layer spinner-red-only">
-                                                    <div class="circle-clipper left">
-                                                        <div class="circle"></div>
-                                                    </div><div class="gap-patch">
-                                                        <div class="circle"></div>
-                                                    </div><div class="circle-clipper right">
-                                                        <div class="circle"></div>
-                                                    </div>
-                                                </div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="table-target"> <!-- Will be rewritten on load --!>
+                            
                         </tbody>
                     </table>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Spinner !-->
+        <div class="preloader-wrapper big active spinner-center">
+            <div class="spinner-layer spinner-red-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+         </div>
     </main>
 
     <footer class="page-footer">
@@ -77,12 +72,12 @@
         </div>
     </footer>
 
-    <!-- Template to replace footer !-->
+    <!-- Template to replace div#footer-target !-->
     <script id="footer-template" type="x-tmpl-mustache">
         Last Updated: {{timestamp}}
         <a class="grey-text text-lighten-4 right" href="http://cullenself.com">Cullen Self</a>
     </script>
-    <!-- Template to replace tbody.target !-->
+    <!-- Template to replace tbody#table-target !-->
     <script id="table-template" type="x-tmpl-mustache">
         {{#score}}
             <tr class="main">

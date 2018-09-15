@@ -4,9 +4,14 @@ module.exports = {
         "jquery": true
     },
     "globals": {
-        "Mustache": true
+        "Mustache": true,
+        "window": true
     },
     "rules": {
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "no-param-reassign": [
+            "error",
+            {"props": false}
+        ]
     }
 };
