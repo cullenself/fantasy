@@ -105,14 +105,28 @@ function calcScore(result) {
       const t = result.stats.pro_teams.find(p => p.name === pro);
       if (result.sched) {
         let match = result.sched.games.find(g => g.homeAbbreviation === t.abbreviation);
-        if (match !== undefined) {
-          t.nextGame = `vs. ${match.awayAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
-        } else {
-          match = result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
-          t.nextGame = `@ ${match.homeAbbreviation}, ${(new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT)}`;
+        const home = (match !== undefined);
+        match = match || result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
+        const at = home ? 'vs.' : '@';
+        const opp = home ? match.awayAbbreviation : match.homeAbbreviation;
+        let gameScore = `${Math.max(match.homeScore, match.awayScore)}-${Math.min(match.homeScore, match.awayScore)}`;
+        let winning = (home === (match.homeScore > match.awayScore));
+        let time;
+        switch (match.complete) {
+          case 'UNPLAYED':
+            time = (new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT);
+            winning = '';
+            gameScore = '';
+            break;
+          case 'LIVE':
+            time = `${match.quarter}${['st', 'nd', 'rd', 'th'][match.quarter]} Quarter`;
+            winning = winning ? 'Up' : 'Down';
+            break;
+          default:
+            time = '';
+            winning = winning ? 'W' : 'L';
         }
-      } else {
-        t.nextGame = '';
+        t.nextGame = `${winning} ${gameScore} ${at} ${opp} ${time}`;
       }
       temp.pros.push(t);
     });

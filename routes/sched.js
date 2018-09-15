@@ -34,6 +34,7 @@ async function readSchedAPI() {
             awayScore: g.score.awayScoreTotal,
             gametime: g.schedule.startTime,
             complete: g.schedule.playedStatus,
+            quarter: g.score.currentQuarter,
           });
         });
         return sched;
