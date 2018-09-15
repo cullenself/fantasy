@@ -7,9 +7,9 @@ const helper = require('../helper');
 
 /**
  * Try to retrieve and parse basic season stats from MySportsFeeds.
- * @returns {Object} next   Dictionary that follows schema from getNext()
+ * @returns {Object} sched   Dictionary that follows schema from getSched()
  */
-async function readNextAPI() {
+async function readSchedAPI() {
   const TOKEN = process.env.MSFTOKEN;
   if (TOKEN) {
     const week = helper.getNFLWeek();
@@ -23,17 +23,17 @@ async function readNextAPI() {
     };
     return request(options)
       .then((msf) => {
-        const next = {
+        const sched = {
           timestamp: msf.lastUpdatedOn, week, source: 'msf', games: [],
         };
         Object.values(msf.games).forEach((g) => {
-          next.games.push({
+          sched.games.push({
             homeAbbreviation: g.schedule.homeTeam.abbreviation,
             awayAbbreviation: g.schedule.awayTeam.abbreviation,
             gametime: g.schedule.startTime,
           });
         });
-        return next;
+        return sched;
       });
   }
   const err = new Error('Token environment variable not set');
@@ -43,36 +43,37 @@ async function readNextAPI() {
 
 /**
  * Write NFL schedule to publicly accessible file to speed up response.
- * @write {Object} next     Dictionary that follows schema from getNext()
+ * @write {Object} sched     Dictionary that follows schema from getSched()
  */
 function cache(stats) {
-  fs.writeFile('./public/javascripts/next.json', JSON.stringify(stats), () => {});
+  fs.writeFile('./public/javascripts/sched.json', JSON.stringify(stats), () => {});
 }
 
 /**
  * Express route to provide JSON formatted stats object with current NFL team information.
  * First tries a third-party API, then falls back on scraping the information.
  *
- * @response {Object} next                  Information about the next week's NFL games
- * @response {String} next.timestamp        ISO8601 date of last update
- * @response {Int}    next.week             Current NFL week, rolls over every Tues.
- * @response {String} next.source           Currently 'msf', indicating MySportsFeeds
- * @response {Array}  next.games            List of next week's matchups
+ * @response {Object} sched                  Information about the next week's NFL games
+ * @response {String} sched.timestamp        ISO8601 date of last update
+ * @response {Int}    sched.week             Current NFL week, rolls over every Tues.
+ * @response {String} sched.source           Currently 'msf', indicating MySportsFeeds
+ * @response {Array}  sched.games            List of next week's matchups
  * @response {String} game.homeAbbreviation Home team abbreviation
  * @response {String} game.awayAbbreviation Away team abbreviation
+ * @response {String} game.gametime         ISO8601 time of next game
  */
-function getNext(req, res) {
+function getSched(req, res) {
   // Change to use a proper API
-  readNextAPI()
-    .then((next) => {
-      res.jsonp(next);
-      cache(next);
+  readSchedAPI()
+    .then((sched) => {
+      res.jsonp(sched);
+      cache(sched);
     });
 }
 
 /**
- * Make getStats available to other files
+ * Make getSched available to other files
  */
 module.exports = {
-  getNext,
+  getSched,
 };

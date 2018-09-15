@@ -10,10 +10,10 @@
         - [x] build backend to serve `stats.json`
         - [x] change `loadStats()` to call this backend
         - [x] Use API rather than scrape results
-            - [ ] Add Next games
+            - [x] Add Next games
                 - [x] Add cache handle on front end
                 - [x] Add times
-                - [ ] It'd be cleaner if added back `next` object and put text generation in the render function, else more functionality will pile up
+                - [x] It'd be cleaner if added back `next` object and put text generation in the render function, else more functionality will pile up
             - [ ] Add scores to games in progress?
             - [ ] Team Logos and colors for detail page
             - [x]  Last updated footer
