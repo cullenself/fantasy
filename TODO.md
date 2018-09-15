@@ -11,6 +11,8 @@
         - [x] change `loadStats()` to call this backend
         - [x] Use API rather than scrape results
             - [ ] Add Next games
+                - [ ] Add cache handle on front end
+                - [ ] Add times
             - [ ] Add scores to games in progress?
             - [ ] Team Logos and colors for detail page
             - [x]  Last updated footer

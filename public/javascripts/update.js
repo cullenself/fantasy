@@ -82,22 +82,33 @@ async function loadCache() {
   return Promise.all([
     $.getJSON('/javascripts/teams.json'),
     $.getJSON('/javascripts/stats.json'),
+    $.getJSON('/javascripts/next.json'),
   ]).catch((err) => {
     if (err.status === 404) {
       return Promise.all([
         $.getJSON('/javascripts/teams.json'),
         $.getJSON('/stats?callback=?'),
+        $.getJSON('/next?callback=?'),
       ]);
     }
     throw err;
   }).then((results) => {
     const teams = results[0];
     const stats = results[1];
+    const next = results[2];
     const score = [];
     Object.keys(teams).forEach((part) => {
       const temp = { part, wins: 0, pros: [] };
       Object.values(teams[part]).forEach((pro) => {
-        temp.pros.push(stats.pro_teams.find(p => p.name === pro));
+        const t = stats.pro_teams.find(p => p.name === pro);
+        let match = next.games.find(g => g.homeAbbreviation === t.abbreviation);
+        if (match !== undefined) {
+          t.next = `${match.homeAbbreviation} vs. ${match.awayAbbreviation}`;
+        } else {
+          match = next.games.find(g => g.awayAbbreviation === t.abbreviation);
+          t.next = `${match.awayAbbreviation} @ ${match.homeAbbreviation}`;
+        }
+        temp.pros.push(t);
       });
       temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
       score.push(temp);

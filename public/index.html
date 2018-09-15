@@ -7,7 +7,7 @@
     <!-- Content Scripts --!>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.2/mustache.min.js"></script>
-    <script src="./javascripts/update.min.js"></script>
+    <script src="./javascripts/update.js"></script>
 
     <!-- Stylesheets --!>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -94,7 +94,7 @@
                         <tbody>
                             {{#pros}}
                                 <tr>
-                                    <td>{{name}}</td>
+                                    <td>{{name}}<p class="next">{{next}}</p></td>
                                     <td>{{wins}}</td>
                                 </tr>
                             {{/pros}}
