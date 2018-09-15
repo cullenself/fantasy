@@ -3,10 +3,12 @@ const request = require('request-promise-native');
 const Buffer = require('Buffer');
 const cheerio = require('cheerio');
 const moment = require('moment');
-// Constants
-const dateFormat = 'dddd, MMM D @ h:mm A';
+const fs = require('fs');
 
-// Helper Functions
+/**
+ * Try to retrieve and parse basic season stats from MySportsFeeds.
+ * @returns {Object} stats  Dictionary that follows schema from getStats()
+ */
 async function readAPI() {
   const TOKEN = process.env.MSFTOKEN;
   if (TOKEN) {
@@ -26,7 +28,7 @@ async function readAPI() {
       // Probably should add error handling, maybe cache backups
       // console.log(error); // TODO: remove
       // console.log(response);
-        const stats = { timestamp: moment(msf.lastUpdatedOn).format(dateFormat), source: 'msf', pro_teams: [] };
+        const stats = { timestamp: msf.lastUpdatedOn, source: 'msf', pro_teams: [] };
         Object.values(msf.teams).forEach((t) => {
           stats.pro_teams.push({
             name: `${t.team.city} ${t.team.name}`,
@@ -42,6 +44,10 @@ async function readAPI() {
   throw err;
 }
 
+/**
+ * Scrape basic season stats from the Washington Post.
+ * @returns {Object} stats  Dictionary that follows schema from getStats()
+ */
 async function readWP() {
   const options = {
     uri: 'http://stats.washingtonpost.com/fb/standings.asp',
@@ -60,7 +66,7 @@ async function readWP() {
       const wins = $('.shsRow0Row').map((i, el) => parseInt($(el).find('.shsTotD').first().text(), 10)).toArray().concat(
         $('.shsRow1Row').map((i, el) => parseInt($(el).find('.shsTotD').first().text(), 10)).toArray(),
       );
-      const timestamp = moment($('#shsTimestamp').text().replace(/Last updated (\w+)\. (\d+), ((\d+):(\d{2})) (A\.M\.|P\.M\.) (\w+)/gm, '$2-$1T$3 $6 -4'), 'D-MMMTh:mm A Z').format(dateFormat);
+      const timestamp = moment($('#shsTimestamp').text().replace(/Last updated (\w+)\. (\d+), ((\d+):(\d{2})) (A\.M\.|P\.M\.) (\w+)/gm, '$2-$1T$3 $6 -4'), 'D-MMMTh:mm A Z').format();
       const stats = { timestamp, source: 'wp', pro_teams: [] };
       for (let i = 0; i < 32; i++) {
         stats.pro_teams.push({
@@ -74,9 +80,20 @@ async function readWP() {
 }
 
 /**
- * Route to provide JSON formatted stats object with current NFL team information.
+ * Write NFL statistics to publicly accessible file to speed up response.
+ * @write {Object} stats  Dictionary that follows schema from getStats()
+ */
+function cache(stats) {
+  fs.writeFile('./public/javascripts/stats.json', JSON.stringify(stats), () => {});
+}
+
+/**
+ * Express route to provide JSON formatted stats object with current NFL team information.
+ * First tries a third-party API, then falls back on scraping the information.
+ *
  * @response {Object} stats                         Dictionary containing pro_teams and timestamp
- * @response {String} stats.timestamp               Time of last update (pre-formatted)
+ * @response {String} stats.timestamp               Time of last update (ISO8601 formatted)
+ * @response {String} stats.source                  Either 'msf' or 'wp'
  * @response {Array}  stats.pro_teams               Array containing NFL team dictionaries
  * @response {Object} pro_team (stats.pro_teams[i]) Dictionary of relevant values for each
  *                                                    Professional Team
@@ -87,12 +104,16 @@ async function readWP() {
 function getStats(req, res) {
   // Change to use a proper API
   readAPI()
-    .catch(() => readWP())
+    .catch(readWP)
     .then((stats) => {
       res.jsonp(stats);
+      cache(stats);
     });
 }
 
+/**
+ * Make getStats available to other files
+ */
 module.exports = {
   getStats,
 };
