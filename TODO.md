@@ -1,7 +1,8 @@
 # TODO
-- [ ] Smart Sourcing
-    - [ ] Add Cache
-    - [ ] Server returns Latest info compiled from all sources
+- [x] Smart Sourcing
+    - [x] Add Cache
+    - [x] Server returns Latest info compiled from all sources
+    - [ ] Set force false and handle 304 response
 - [x] Automatic minify of js in `./public/javascripts/`
     - [x] enable compression
 - [x] updates on:
