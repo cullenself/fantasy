@@ -50,7 +50,9 @@ async function updateScore(result) {
   if (Date(newStats.timestamp) > Date(result.stats.timestamp)) { // need to implement comparision
     Object.values(result.score).forEach((s) => {
       Object.values(s.pros).forEach((pro) => {
-        pro.wins = newStats.pro_teams.find(p => p.name === pro.name).wins;
+        const newPro = newStats.pro_teams.find(p => p.name === pro.name);
+        pro.wins = newPro.wins;
+        pro.next = newPro.next;
       });
     });
     result.score.sort((first, second) => second.wins - first.wins);
@@ -95,20 +97,11 @@ async function loadCache() {
   }).then((results) => {
     const teams = results[0];
     const stats = results[1];
-    const next = results[2];
     const score = [];
     Object.keys(teams).forEach((part) => {
       const temp = { part, wins: 0, pros: [] };
       Object.values(teams[part]).forEach((pro) => {
-        const t = stats.pro_teams.find(p => p.name === pro);
-        let match = next.games.find(g => g.homeAbbreviation === t.abbreviation);
-        if (match !== undefined) {
-          t.next = `${match.homeAbbreviation} vs. ${match.awayAbbreviation}`;
-        } else {
-          match = next.games.find(g => g.awayAbbreviation === t.abbreviation);
-          t.next = `${match.awayAbbreviation} @ ${match.homeAbbreviation}`;
-        }
-        temp.pros.push(t);
+        temp.pros.push(stats.pro_teams.find(p => p.name === pro));
       });
       temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
       score.push(temp);
