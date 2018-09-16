@@ -30,7 +30,11 @@ async function readSchedAPI() {
           sched.games.push({
             homeAbbreviation: g.schedule.homeTeam.abbreviation,
             awayAbbreviation: g.schedule.awayTeam.abbreviation,
+            homeScore: g.score.homeScoreTotal,
+            awayScore: g.score.awayScoreTotal,
             gametime: g.schedule.startTime,
+            complete: g.schedule.playedStatus,
+            quarter: g.score.currentQuarter,
           });
         });
         return sched;
