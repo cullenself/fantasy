@@ -4,6 +4,7 @@ const Buffer = require('Buffer');
 const cheerio = require('cheerio');
 const moment = require('moment');
 const fs = require('fs');
+const helper = require('../helper.js');
 
 /**
  * Try to retrieve and parse basic season stats from MySportsFeeds.
@@ -20,7 +21,8 @@ async function readAPI() {
       },
       json: true,
       qs: {
-        stats: 'W',
+        stats: 'W,T',
+        date: helper.getStartOfWeek(),
       },
     };
     return request(options)
@@ -34,6 +36,7 @@ async function readAPI() {
             name: `${t.team.city} ${t.team.name}`,
             abbreviation: t.team.abbreviation,
             wins: t.stats.standings.wins,
+            ties: t.stats.standings.ties,
           });
         });
         return stats;

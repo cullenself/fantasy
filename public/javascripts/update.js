@@ -131,9 +131,8 @@ function calcScore(result) {
               winning = tie ? 'Tied' : winning;
               break;
             default:
-              if ((new Date(match.gametime)) > (new Date(result.stats.timestamp))) {
-                t.wins += winning ? 1 : 0;
-              }
+              t.wins += winning ? 1 : 0;
+              t.ties += tie ? 1 : 0;
               time = '';
               winning = winning ? 'W' : 'L';
               winning = tie ? 'Tied' : winning;
@@ -143,13 +142,16 @@ function calcScore(result) {
           t.nextGame = 'Bye';
         }
       }
+      t.disp = `${t.wins}${'+'.repeat(t.ties)}`;
       temp.pros.push(t);
     });
-    temp.pros.sort((first, second) => second.wins - first.wins);
+    temp.pros.sort((first, second) => (second.wins - first.wins) || (second.ties - first.ties));
     temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
+    temp.ties = temp.pros.reduce((acc, curr) => acc + curr.ties, 0);
+    temp.disp = `${temp.wins}${'+'.repeat(temp.ties)}`;
     score.push(temp);
   });
-  score.sort((first, second) => second.wins - first.wins);
+  score.sort((first, second) => (second.wins - first.wins) || (second.ties - first.ties));
   result.score = score;
   return result;
 }
