@@ -124,12 +124,21 @@ function calcScore(result) {
               break;
             case 'LIVE':
               time = `${match.quarter}${['st', 'nd', 'rd', 'th'][match.quarter - 1]} Quarter`;
+              if (match.quarter === 5) {
+                time = 'Overtime';
+              }
               winning = winning ? 'Up' : 'Down';
               winning = tie ? 'Tied' : winning;
               break;
+            case 'COMPLETED_PENDING_REVIEW':
+              if (winning) {
+                t.wins += 1;
+              }
+              // falls through
             default:
               time = '';
               winning = winning ? 'W' : 'L';
+              winning = tie ? 'Tied' : winning;
           }
           t.nextGame = `${winning} ${gameScore} ${at} ${opp} ${time}`; // compile info string
         } else {
