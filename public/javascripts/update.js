@@ -23,7 +23,7 @@ async function render(result) {
     weekday: 'short', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short',
   };
   const renderedTable = Mustache.render(window.tableTemplate, { score: result.score });
-  const renderedFooter = Mustache.render(window.footerTemplate, { timestamp: (new Date(result.stats.timestamp)).toLocaleString('en-US', options) });
+  const renderedFooter = Mustache.render(window.footerTemplate, { timestamp: (new Date(result.sched.timestamp)).toLocaleString('en-US', options) });
   $('tbody#table-target').html(renderedTable);
   $('div#footer-target').html(renderedFooter);
   $('td.hidden').hide();
