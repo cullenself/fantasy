@@ -104,32 +104,41 @@ function calcScore(result) {
     Object.values(result.teams[part]).forEach((pro) => {
       const t = result.stats.pro_teams.find(p => p.name === pro);
       if (result.sched) {
+        // Check if team is home
         let match = result.sched.games.find(g => g.homeAbbreviation === t.abbreviation);
         const home = (match !== undefined);
+        // Next check if the team is away
         match = match || result.sched.games.find(g => g.awayAbbreviation === t.abbreviation);
-        const at = home ? 'vs.' : '@';
-        const opp = home ? match.awayAbbreviation : match.homeAbbreviation;
-        let gameScore = `${Math.max(match.homeScore, match.awayScore)}-${Math.min(match.homeScore, match.awayScore)}`;
-        let winning = (home === (match.homeScore > match.awayScore));
-        let time;
-        switch (match.complete) {
-          case 'UNPLAYED':
-            time = (new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT);
-            winning = '';
-            gameScore = '';
-            break;
-          case 'LIVE':
-            time = `${match.quarter}${['st', 'nd', 'rd', 'th'][match.quarter]} Quarter`;
-            winning = winning ? 'Up' : 'Down';
-            break;
-          default:
-            time = '';
-            winning = winning ? 'W' : 'L';
+        if (match !== undefined) { // if still undefined, then it's a bye week
+          const at = home ? 'vs.' : '@';
+          const opp = home ? match.awayAbbreviation : match.homeAbbreviation;
+          let gameScore = `${Math.max(match.homeScore, match.awayScore)}-${Math.min(match.homeScore, match.awayScore)}`;
+          let winning = (home === (match.homeScore > match.awayScore));
+          const tie = match.homeScore === match.awayScore;
+          let time;
+          switch (match.complete) {
+            case 'UNPLAYED':
+              time = (new Date(match.gametime)).toLocaleDateString('en-US', DATEOPT);
+              winning = '';
+              gameScore = '';
+              break;
+            case 'LIVE':
+              time = `${match.quarter}${['st', 'nd', 'rd', 'th'][match.quarter - 1]} Quarter`;
+              winning = winning ? 'Up' : 'Down';
+              winning = tie ? 'Tied' : winning;
+              break;
+            default:
+              time = '';
+              winning = winning ? 'W' : 'L';
+          }
+          t.nextGame = `${winning} ${gameScore} ${at} ${opp} ${time}`; // compile info string
+        } else {
+          t.nextGame = 'Bye';
         }
-        t.nextGame = `${winning} ${gameScore} ${at} ${opp} ${time}`;
       }
       temp.pros.push(t);
     });
+    temp.pros.sort((first, second) => second.wins - first.wins);
     temp.wins = temp.pros.reduce((acc, curr) => acc + curr.wins, 0);
     score.push(temp);
   });
