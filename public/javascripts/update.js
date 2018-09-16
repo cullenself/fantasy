@@ -130,12 +130,10 @@ function calcScore(result) {
               winning = winning ? 'Up' : 'Down';
               winning = tie ? 'Tied' : winning;
               break;
-            case 'COMPLETED_PENDING_REVIEW':
-              if (winning) {
-                t.wins += 1;
-              }
-              // falls through
             default:
+              if ((new Date(match.gametime)) > (new Date(result.stats.timestamp))) {
+                t.wins += winning ? 1 : 0;
+              }
               time = '';
               winning = winning ? 'W' : 'L';
               winning = tie ? 'Tied' : winning;
