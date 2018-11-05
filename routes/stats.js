@@ -69,6 +69,9 @@ async function readWP() {
       const wins = $('.shsRow0Row').map((i, el) => parseInt($(el).find('.shsTotD').first().text(), 10)).toArray().concat(
         $('.shsRow1Row').map((i, el) => parseInt($(el).find('.shsTotD').first().text(), 10)).toArray(),
       );
+      const ties = $('.shsRow0Row .shsTotD:nth-child(4)').map((i, el) => parseInt($(el).text(), 10)).toArray().concat(
+        $('.shsRow1Row .shsTotD:nth-child(4)').map((i, el) => parseInt($(el).text(), 10)).toArray(),
+      );
       const timestamp = moment($('#shsTimestamp').text().replace(/Last updated (\w+)\. (\d+), ((\d+):(\d{2})) (A\.M\.|P\.M\.) (\w+)/gm, '$2-$1T$3 $6 -4'), 'D-MMMTh:mm A Z').format();
       const stats = { timestamp, source: 'wp', pro_teams: [] };
       for (let i = 0; i < 32; i++) {
@@ -76,6 +79,7 @@ async function readWP() {
           name: names[i],
           abbreviation: (abbrs[i] === 'LAR') ? 'LA' : abbrs[i].toUpperCase(),
           wins: wins[i],
+          ties: ties[i],
         });
       }
       return stats;
